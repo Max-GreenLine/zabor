@@ -106,12 +106,6 @@ function detectVid() {
   const v = q || h || s;
   return DATA.vids[v] ? v : null;
 }
-const HERO_VARIANTS = { "": "тёмный + фото", bg: "фото фоном", light: "светлый + фото", sketch: "светлый + скетч" };
-function detectHero() {
-  const q = new URLSearchParams(location.search).get("hero");
-  const v = q ?? localStorage.getItem("proto-hero") ?? "";
-  return v in HERO_VARIANTS ? v : "";
-}
 let currentVid = detectVid();          // null = общий запрос
 let activeTab = currentVid || "proflist";
 
@@ -305,14 +299,6 @@ function renderProto() {
       const u = new URL(location.href); u.search = id ? "?vid=" + id : ""; u.hash = ""; location.href = u.href; };
     box.appendChild(b);
   });
-  const hbox = $("#proto-hero"); hbox.innerHTML = "";
-  const cur = detectHero();
-  Object.entries(HERO_VARIANTS).forEach(([id, lbl]) => {
-    const b = document.createElement("button");
-    b.textContent = lbl; b.setAttribute("aria-pressed", cur === id);
-    b.onclick = () => { if (id) localStorage.setItem("proto-hero", id); else localStorage.removeItem("proto-hero"); location.reload(); };
-    hbox.appendChild(b);
-  });
 }
 
 /* --- init --- */
@@ -320,13 +306,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $$("[data-phone]").forEach(el => { if (!el.hasAttribute("data-keep")) el.textContent = DATA.phone; el.href = "tel:" + DATA.phone.replace(/\D/g, ""); });
   $$("[data-deadline]").forEach(el => el.textContent = DATA.deadline);
   $$("[data-num]").forEach(el => el.textContent = DATA[el.dataset.num]);
-  const hp = $("#hero-photo-img"); if (hp) hp.src = imgSrc("case4-1.jpg");
-  const hs = $("#hero-sketch-img"); if (hs) hs.src = imgSrc("sketch.svg");
-  const hv = detectHero();
-  if (hv) {
-    $(".hero").classList.add("hero--" + hv);
-    if (hv === "bg") $(".hero").style.backgroundImage = `linear-gradient(100deg, rgba(15,20,22,.92) 25%, rgba(15,20,22,.55) 70%, rgba(15,20,22,.35)), url("${imgSrc("case4-1.jpg")}")`;
-  }
+  const hp = $("#hero-photo-img"); if (hp) hp.src = imgSrc("case3-6.jpg");
   renderHero(); renderTabs(); renderKinds(); renderWorks(); renderQuiz(); bindFinal(); bindPopup(); renderProto();
   $("#quiz-back").onclick = () => go(-1);
   $("#quiz-next").onclick = () => go(1);
