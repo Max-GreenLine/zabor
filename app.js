@@ -106,6 +106,12 @@ function detectVid() {
   const v = q || h || s;
   return DATA.vids[v] ? v : null;
 }
+const HERO_VARIANTS = { "": "тёмный + фото", bg: "фото фоном", light: "светлый + фото", sketch: "светлый + скетч" };
+function detectHero() {
+  const q = new URLSearchParams(location.search).get("hero");
+  const v = q ?? localStorage.getItem("proto-hero") ?? "";
+  return v in HERO_VARIANTS ? v : "";
+}
 let currentVid = detectVid();          // null = общий запрос
 let activeTab = currentVid || "proflist";
 
@@ -173,7 +179,7 @@ function renderWorks() {
     box.appendChild(el);
   });
   const cta = document.createElement("article"); cta.className = "work work-cta";
-  cta.innerHTML = `<div class="work-cta-body"><h3>Тут будет ваш забор</h3><p>Посёлок — ваш, цена — честная. Фото добавим сюда после монтажа.</p><button class="btn btn-primary" data-popup="contact" data-source="works" data-title="Начнём с бесплатного замера">Хочу так же</button></div>`;
+  cta.innerHTML = `<div class="work-cta-body"><h3>Тут будет ваш забор</h3><p>Посёлок — ваш, цена — честная. Фото добавим сюда после монтажа.</p><button class="btn btn-primary" data-popup="contact" data-source="works" data-title="Начнём с бесплатного замера" data-btn="Записаться на замер">Хочу так же</button></div>`;
   box.appendChild(cta);
   $$(".work-photo").forEach(ph => {
     const step = d => {
@@ -256,7 +262,7 @@ function openPopup(mode, o = {}) {
   const form = $("#modal-contact");
   form.hidden = mode !== "contact";
   $("#c-done").hidden = true;
-  if (mode === "contact") $("#c-comment-wrap").style.display = o.comment ? "" : "none";
+  if (mode === "contact") { $("#c-comment-wrap").style.display = o.comment ? "" : "none"; $('#modal-contact button[type="submit"]').textContent = o.btn || "Отправить"; }
   if (mode === "calc") { if (o.vid && DATA.vids[o.vid]) { quiz.a.vid = o.vid; if (quiz.step === 0) quiz.step = 1; } renderQuiz(); }
   overlay.hidden = false; document.body.style.overflow = "hidden";
   const f = mode === "contact" ? $("#c-name") : null; if (f) f.focus();
@@ -265,7 +271,7 @@ function closePopup() { overlay.hidden = true; document.body.style.overflow = ""
 function bindPopup() {
   document.addEventListener("click", e => {
     const b = e.target.closest("[data-popup]");
-    if (b) openPopup(b.dataset.popup, { title: b.dataset.title, source: b.dataset.source, vid: b.dataset.vid, comment: !!b.dataset.comment });
+    if (b) openPopup(b.dataset.popup, { title: b.dataset.title, source: b.dataset.source, vid: b.dataset.vid, comment: !!b.dataset.comment, btn: b.dataset.btn });
   });
   $("#modal-close").onclick = closePopup;
   overlay.addEventListener("click", e => { if (e.target === overlay) closePopup(); });
@@ -299,6 +305,14 @@ function renderProto() {
       const u = new URL(location.href); u.search = id ? "?vid=" + id : ""; u.hash = ""; location.href = u.href; };
     box.appendChild(b);
   });
+  const hbox = $("#proto-hero"); hbox.innerHTML = "";
+  const cur = detectHero();
+  Object.entries(HERO_VARIANTS).forEach(([id, lbl]) => {
+    const b = document.createElement("button");
+    b.textContent = lbl; b.setAttribute("aria-pressed", cur === id);
+    b.onclick = () => { if (id) localStorage.setItem("proto-hero", id); else localStorage.removeItem("proto-hero"); location.reload(); };
+    hbox.appendChild(b);
+  });
 }
 
 /* --- init --- */
@@ -307,6 +321,11 @@ document.addEventListener("DOMContentLoaded", () => {
   $$("[data-deadline]").forEach(el => el.textContent = DATA.deadline);
   $$("[data-num]").forEach(el => el.textContent = DATA[el.dataset.num]);
   const hp = $("#hero-photo-img"); if (hp) hp.src = imgSrc("case4-1.jpg");
+  const hv = detectHero();
+  if (hv) {
+    $(".hero").classList.add("hero--" + hv);
+    if (hv === "bg") $(".hero").style.backgroundImage = `linear-gradient(100deg, rgba(15,20,22,.92) 25%, rgba(15,20,22,.55) 70%, rgba(15,20,22,.35)), url("${imgSrc("case4-1.jpg")}")`;
+  }
   renderHero(); renderTabs(); renderKinds(); renderWorks(); renderQuiz(); bindFinal(); bindPopup(); renderProto();
   $("#quiz-back").onclick = () => go(-1);
   $("#quiz-next").onclick = () => go(1);

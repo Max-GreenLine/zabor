@@ -19,10 +19,46 @@
 <!-- 1. Первый экран: УТП + квиз -->
 <section class="hero" id="top">
   <div class="wrap">
-    <div>
+    <div class="hero-copy">
       <div class="hero-tag">Монтаж круглый год</div>
       <h1 id="hero-title"></h1>
       <p class="hero-sub" id="hero-sub"></p>
+    </div>
+
+    <div class="hero-photo">
+      <img id="hero-photo-img" src="img/cases/case4-1.jpg" alt="Забор из профлиста на винтовых сваях — Сыктывкар">
+      <span class="hero-photo-cap">ул. Ручейная · 64 м за 2 дня</span>
+      <svg class="hero-sketch" viewBox="0 0 480 340" aria-hidden="true">
+        <g stroke-linecap="round" fill="none">
+          <!-- планки -->
+          <g stroke="var(--ink-2)" stroke-width="7" opacity=".55" transform="rotate(-.4 240 160)">
+            <path d="M60 78 V240"/><path d="M88 74 V240"/><path d="M116 79 V240"/><path d="M144 76 V240"/><path d="M172 80 V240"/><path d="M200 75 V240"/><path d="M228 78 V240"/><path d="M256 74 V240"/><path d="M284 79 V240"/><path d="M312 76 V240"/><path d="M340 80 V240"/><path d="M368 75 V240"/><path d="M396 78 V240"/><path d="M424 76 V240"/>
+          </g>
+          <!-- лаги -->
+          <path d="M42 108 H442" stroke="var(--ink)" stroke-width="4"/>
+          <path d="M42 196 H442" stroke="var(--ink)" stroke-width="4"/>
+          <!-- земля -->
+          <path d="M20 244 H460" stroke="var(--ink)" stroke-width="2.5" stroke-dasharray="1 9"/>
+          <!-- сваи -->
+          <g stroke="var(--moss)" stroke-width="6">
+            <path d="M100 64 V300"/><path d="M240 60 V300"/><path d="M380 64 V300"/>
+          </g>
+          <g stroke="var(--moss)" stroke-width="3">
+            <path d="M100 296 l-16 -9 M100 296 l16 -9 M100 282 l-11 -7 M100 282 l11 -7"/>
+            <path d="M240 296 l-16 -9 M240 296 l16 -9 M240 282 l-11 -7 M240 282 l11 -7"/>
+            <path d="M380 296 l-16 -9 M380 296 l16 -9 M380 282 l-11 -7 M380 282 l11 -7"/>
+          </g>
+          <!-- промерзание -->
+          <path d="M20 290 H460" stroke="var(--accent)" stroke-width="2" stroke-dasharray="8 6"/>
+          <text x="24" y="283" font-family="var(--mono)" font-size="13" fill="var(--accent)" stroke="none">промерзание 1,7 м</text>
+          <!-- размер 1,8 -->
+          <path d="M432 248 V300 m-5 -47 l5 -7 5 7 m-10 42 l5 7 5 -7" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <text x="440" y="278" font-family="var(--mono)" font-size="13" fill="var(--ink-2)" stroke="none">1,8 м</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="hero-rest">
       <div class="hero-price">
         <span class="num" id="hero-price"></span>
         <span class="cap" id="hero-price-cap"></span>
@@ -39,11 +75,6 @@
         <button class="btn btn-primary btn-sheen" data-popup="calc" data-source="hero">Рассчитать мой забор</button>
         <a class="btn btn-ghost" data-phone data-keep href="tel:">Позвонить</a>
       </div>
-    </div>
-
-    <div class="hero-photo">
-      <img id="hero-photo-img" src="img/cases/case4-1.jpg" alt="Забор из профлиста на винтовых сваях — Сыктывкар">
-      <span class="hero-photo-cap">ул. Ручейная · 64 м за 2 дня</span>
     </div>
   </div>
 </section>
@@ -119,7 +150,7 @@
       <article class="why"><span class="ico">→ столбы</span><h3>Дача, ограниченный бюджет</h3><p>Нужно закрыть периметр недорого и быстро, а подравнять столб через несколько лет — не проблема.</p></article>
     </div>
     <div class="block-cta">
-      <button class="btn btn-ghost" data-popup="contact" data-source="tech" data-title="Опишите ваш участок — подскажем решение" data-comment="1">У меня особый случай — нужна консультация</button>
+      <button class="btn btn-ghost" data-popup="contact" data-source="tech" data-title="Опишите ваш участок — подскажем решение" data-comment="1" data-btn="Спросить">У меня особый случай — нужна консультация</button>
     </div>
   </div>
 </section>
@@ -169,7 +200,7 @@
       <div><b>Работаем без электричества</b><span>свой генератор — участок без подключения не помеха</span></div>
     </div>
     <div class="block-cta">
-      <button class="btn btn-primary btn-sheen" data-popup="contact" data-source="steps" data-title="Записаться на бесплатный замер">Мне всё понятно — давайте замер</button>
+      <button class="btn btn-primary btn-sheen" data-popup="contact" data-source="steps" data-title="Записаться на бесплатный замер" data-btn="Записаться на замер">Мне всё понятно — давайте замер</button>
     </div>
   </div>
 </section>
@@ -192,7 +223,7 @@
       <details><summary>Сколько прослужит забор?</summary><div class="a"><b>Наш ответ:</b> на винтовых сваях — <span data-num="life"></span> лет; заводское покрытие плюс грунт-эмаль после монтажа. На забивных столбах металл служит столько же, но сам столб со временем может сдвинуть пучением — забор придётся подравнивать.</div></details>
     </div>
     <div class="block-cta">
-      <button class="btn btn-ghost" data-popup="contact" data-source="faq" data-title="Задайте вопрос — ответим лично" data-comment="1">У меня другой вопрос</button>
+      <button class="btn btn-ghost" data-popup="contact" data-source="faq" data-title="Задайте вопрос — ответим лично" data-comment="1" data-btn="Спросить">У меня другой вопрос</button>
     </div>
   </div>
 </section>
@@ -279,6 +310,8 @@
     <div class="body">
       <small>Как открылась страница (подмена первого экрана и квиза):</small>
       <div id="proto-opts" style="display:grid;gap:.3rem"></div>
+      <small>Вид первого экрана:</small>
+      <div id="proto-hero" style="display:grid;gap:.3rem"></div>
       <small>Плашки MOCK — данные-заглушки.</small>
     </div>
   </details>
