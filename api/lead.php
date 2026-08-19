@@ -6,9 +6,12 @@
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json; charset=utf-8');
 
-$tokenFile = __DIR__ . '/tg_token.txt';
-$chatFile  = __DIR__ . '/tg_chat.txt';
-if (!is_file($tokenFile) || !is_file($chatFile)) { http_response_code(500); exit('{"ok":false,"err":"not configured"}'); }
+$secretsDirs = [dirname(__DIR__, 3) . '/secrets', __DIR__];  // вне докрута; запасной вариант — рядом
+$tokenFile = $chatFile = null;
+foreach ($secretsDirs as $dir) {
+    if (is_file("$dir/tg_token.txt") && is_file("$dir/tg_chat.txt")) { $tokenFile = "$dir/tg_token.txt"; $chatFile = "$dir/tg_chat.txt"; break; }
+}
+if (!$tokenFile) { http_response_code(500); exit('{"ok":false,"err":"not configured"}'); }
 $token = trim(file_get_contents($tokenFile));
 $chat  = trim(file_get_contents($chatFile));
 
@@ -22,12 +25,20 @@ $lock = sys_get_temp_dir() . '/lead_' . md5($_SERVER['REMOTE_ADDR'] ?? '');
 if (is_file($lock) && time() - filemtime($lock) < 5) { http_response_code(429); exit('{"ok":false,"err":"slow down"}'); }
 touch($lock);
 
-$ctx = stream_context_create(['http' => [
-    'method'  => 'POST',
-    'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
-    'content' => http_build_query(['chat_id' => $chat, 'text' => $text]),
-    'timeout' => 10,
-]]);
-$res = @file_get_contents("https://api.telegram.org/bot{$token}/sendMessage", false, $ctx);
-if ($res === false) { http_response_code(502); exit('{"ok":false,"err":"telegram unreachable"}'); }
+$ch = curl_init("https://api.telegram.org/bot{$token}/sendMessage");
+curl_setopt_array($ch, [
+    CURLOPT_POST => true,
+    CURLOPT_POSTFIELDS => http_build_query(['chat_id' => $chat, 'text' => $text]),
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_TIMEOUT => 10,
+]);
+$res  = curl_exec($ch);
+$err  = curl_error($ch);
+$code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+curl_close($ch);
+if ($res === false || $code !== 200) {
+    @file_put_contents(sys_get_temp_dir() . '/lead_err.log', date('c') . " code=$code err=$err res=" . substr((string)$res, 0, 300) . "\n", FILE_APPEND);
+    http_response_code(502);
+    exit('{"ok":false,"err":"telegram unreachable"}');
+}
 echo '{"ok":true}';
