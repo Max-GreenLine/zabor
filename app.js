@@ -93,7 +93,7 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const fmt = n => n.toLocaleString("ru-RU");
 const fmtK = n => Math.round(n / 1000) + " тыс.";
-const imgSrc = n => (window.CASE_IMG && window.CASE_IMG[n]) || "img/cases/" + n;   // в артефакте картинки вшиты
+const imgSrc = n => (window.CASE_IMG && window.CASE_IMG[n]) || (n.endsWith(".svg") ? "img/" : "img/cases/") + n;   // в артефакте картинки вшиты
 const postsPrice = v => v.price - DATA.postsDelta;
 const priceStr = v => `${v.from ? "от " : ""}${fmt(v.price)} ₽ / м.п.`;
 const priceLines = v => `<span class="pl"><b>${v.from ? "от " : ""}${fmt(postsPrice(v))} ₽</b> / м.п. на забивных столбах${v.postsOnly ? " — рекомендуем" : ""}</span><span class="pl"><b>${v.from ? "от " : ""}${fmt(v.price)} ₽</b> / м.п. на винтовых сваях</span>`;
@@ -321,6 +321,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $$("[data-deadline]").forEach(el => el.textContent = DATA.deadline);
   $$("[data-num]").forEach(el => el.textContent = DATA[el.dataset.num]);
   const hp = $("#hero-photo-img"); if (hp) hp.src = imgSrc("case4-1.jpg");
+  const hs = $("#hero-sketch-img"); if (hs) hs.src = imgSrc("sketch.svg");
   const hv = detectHero();
   if (hv) {
     $(".hero").classList.add("hero--" + hv);

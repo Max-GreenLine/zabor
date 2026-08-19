@@ -111,9 +111,13 @@ p{margin:0}
 /* варианты: светлый фон */
 .hero--light,.hero--sketch{--hero-ink:var(--ink);--hero-muted:var(--ink-2);--hero-accent:var(--accent);background:var(--card);background-image:none;color:var(--ink);border-bottom:1px solid var(--line)}
 .hero--light .hero-cta .btn-ghost,.hero--sketch .hero-cta .btn-ghost{border-color:var(--line)}
-.hero--sketch .hero-photo{box-shadow:none;border-radius:0}
-.hero--sketch .hero-photo img,.hero--sketch .hero-photo-cap{display:none}
-.hero--sketch .hero-sketch{display:block}
+.hero--sketch .hero-photo{box-shadow:none;border-radius:0;align-self:stretch;display:flex;align-items:center}
+.hero--sketch #hero-photo-img,.hero--sketch .hero-photo-cap{display:none}
+.hero--sketch .hero-sketch{display:block;width:100%;height:auto;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16%);mask-image:linear-gradient(90deg,transparent 0,#000 16%)}
+@media(min-width:900px){.hero--sketch .wrap{grid-template-columns:1fr 1.05fr;column-gap:1.5rem}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .hero-sketch{filter:invert(.85)}}
+:root[data-theme="dark"] .hero-sketch{filter:invert(.85)}
 
 /* блик на ключевых кнопках */
 .btn-sheen{position:relative;overflow:hidden}

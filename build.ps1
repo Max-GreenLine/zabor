@@ -24,8 +24,9 @@ $body
 "@
 
 # картинки кейсов -> base64 для артефакта
-$imgs = Get-ChildItem "$root\img\cases\*.jpg" | ForEach-Object {
-  '"' + $_.Name + '":"data:image/jpeg;base64,' + [Convert]::ToBase64String([IO.File]::ReadAllBytes($_.FullName)) + '"'
+$imgs = @(Get-ChildItem "$root\img\cases\*.jpg") + @(Get-ChildItem "$root\img\sketch.svg") | ForEach-Object {
+  $mime = if ($_.Extension -eq ".svg") { "image/svg+xml" } else { "image/jpeg" }
+  '"' + $_.Name + '":"data:' + $mime + ';base64,' + [Convert]::ToBase64String([IO.File]::ReadAllBytes($_.FullName)) + '"'
 }
 $imgMap = "<script>window.CASE_IMG={" + ($imgs -join ",") + "};</script>"
 
