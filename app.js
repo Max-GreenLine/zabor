@@ -2,6 +2,7 @@
    Всё, что меняется по контенту, — в блоке DATA. Вёрстку трогать не нужно. */
 
 const DATA = {
+  leadUrl: "",                           // адрес приёмника заявок (api/lead.php на хостинге); пусто = режим макета
   phone: "+7 (904) 613-65-30",
   heroPrice: 4000,                       // одна цифра на общем первом экране
   geo: "Сыктывкар и 50 км вокруг",
@@ -261,16 +262,43 @@ function renderQuiz() {
   });
   $$(".opt[data-tech]", root).forEach(b => b.onclick = () => { quiz.a.tech = b.dataset.tech; go(1); });
   $$(".opt[data-k]", root).forEach(b => b.onclick = () => { quiz.a[b.dataset.k] = +b.dataset.i; go(1); });
-  const send = $("#q-send"); if (send) send.onclick = () => {
+  const send = $("#q-send"); if (send) send.onclick = async () => {
     const ph = $("#q-phone").value.replace(/\D/g, "");
     if (ph.length < 10) { $("#q-phone").focus(); $("#q-phone").style.borderColor = "var(--accent)"; return; }
+    send.disabled = true; send.textContent = "Отправляем…";
+    try {
+      await sendLead(["Источник: квиз (" + (popupSource || "квиз") + ")", quizSummary(), "Связь: " + CH_LABEL[quiz.a.channel], "Телефон: +7" + ph.slice(-10)], ph);
+    } catch (e) { send.disabled = false; send.textContent = "Получить расчёт"; alert(FAIL_MSG); return; }
     const msg = quiz.a.channel === "call" ? "Перезвоним с расчётом в течение 15 минут в рабочее время (9:00–20:00)."
       : `Пришлём расчёт в ${quiz.a.channel === "tg" ? "Telegram" : "MAX"} в течение 15 минут в рабочее время (9:00–20:00).`;
-    root.innerHTML = `<div class="quiz-done"><b>Спасибо! Смета уже считается.</b><span>${msg}</span><span class="mock">mock: заявка никуда не отправлена</span></div>`;
+    root.innerHTML = `<div class="quiz-done"><b>Спасибо! Смета уже считается.</b><span>${msg}</span>${mockNote()}</div>`;
     $("#quiz-back").style.visibility = "hidden";
   };
 }
 function go(d) { quiz.step = Math.max(0, Math.min(N - 1, quiz.step + d)); renderQuiz(); }
+
+/* --- отправка заявок --- */
+const CH_LABEL = { tg: "Telegram", max: "MAX", call: "Позвонить" };
+function quizSummary() {
+  const a = quiz.a, L = [];
+  L.push("Вид: " + (a.vid ? DATA.vids[a.vid].tab : "не выбран"));
+  if (a.tech != null) L.push("Основание: " + DATA.tech[a.tech].label);
+  if (a.length != null) L.push("Длина: " + DATA.quiz.length[a.length][0]);
+  if (a.height != null) L.push("Высота: " + a.height.toFixed(1).replace(".", ",") + " м");
+  if (a.gates != null) L.push("Ворота: " + DATA.quiz.gates[a.gates][0]);
+  if (a.where != null) L.push("Район: " + DATA.quiz.where[a.where][0]);
+  const [lo, hi] = estimate();
+  L.push("Оценка для менеджера: " + fmtK(lo) + " – " + fmtK(hi) + " ₽");
+  return L.join("\n");
+}
+async function sendLead(lines, phone) {
+  const text = ["🔔 Заявка с сайта", ...lines, "Страница: " + location.href].join("\n");
+  if (!DATA.leadUrl) { console.log("MOCK-заявка:\n" + text); return; }
+  const r = await fetch(DATA.leadUrl, { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ text, phone }) });
+  if (!r.ok) throw new Error("send failed " + r.status);
+}
+const mockNote = () => DATA.leadUrl ? "" : '<span class="mock">mock: заявка никуда не отправлена</span>';
+const FAIL_MSG = "Не получилось отправить — позвоните нам: " + DATA.phone;
 
 /* --- попап --- */
 const overlay = $("#overlay");
@@ -296,22 +324,33 @@ function bindPopup() {
   $("#modal-close").onclick = closePopup;
   overlay.addEventListener("click", e => { if (e.target === overlay) closePopup(); });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !overlay.hidden) closePopup(); });
-  $("#modal-contact").addEventListener("submit", e => {
+  $("#modal-contact").addEventListener("submit", async e => {
     e.preventDefault();
     const ph = $("#c-phone").value.replace(/\D/g, "");
     if (ph.length < 10) { $("#c-phone").focus(); return; }
-    // popupSource — источник кнопки, уйдёт в заявку при подключении бэкенда
+    const btn = $('#modal-contact button[type="submit"]'); const lbl = btn.textContent;
+    btn.disabled = true; btn.textContent = "Отправляем…";
+    const lines = ["Источник: " + (popupSource || "попап") + " — " + $("#modal-title").textContent,
+      "Имя: " + ($("#c-name").value.trim() || "—"), "Телефон: +7" + ph.slice(-10)];
+    const com = $("#c-comment").value.trim(); if (com) lines.push("Комментарий: " + com);
+    try { await sendLead(lines, ph); } catch (err) { btn.disabled = false; btn.textContent = lbl; alert(FAIL_MSG); return; }
+    btn.disabled = false; btn.textContent = lbl;
     $("#modal-contact").hidden = true; $("#c-done").hidden = false;
+    $("#c-done .mock")?.remove(); if (!DATA.leadUrl) $("#c-done").insertAdjacentHTML("beforeend", '<span class="mock">mock: заявка никуда не отправлена</span>');
   });
 }
 
 /* --- финальная форма --- */
 function bindFinal() {
-  $("#f-send").onclick = e => {
+  $("#f-send").onclick = async e => {
     e.preventDefault();
     const ph = $("#f-phone").value.replace(/\D/g, "");
     if (ph.length < 10) { $("#f-phone").focus(); return; }
-    $("#final-form").innerHTML = `<div class="form-ok">Заявка принята. Перезвоним в течение 15 минут.</div><span class="mock">mock: заявка никуда не отправлена</span>`;
+    const btn = $("#f-send"); btn.disabled = true; btn.textContent = "Отправляем…";
+    const lines = ["Источник: финальная форма (замер)", "Имя: " + ($("#f-name").value.trim() || "—"), "Телефон: +7" + ph.slice(-10)];
+    const wh = $("#f-where").value.trim(); if (wh) lines.push("Участок: " + wh);
+    try { await sendLead(lines, ph); } catch (err) { btn.disabled = false; btn.textContent = "Зафиксировать цену и записаться"; alert(FAIL_MSG); return; }
+    $("#final-form").innerHTML = `<div class="form-ok">Заявка принята. Перезвоним в течение 15 минут.</div>${mockNote()}`;
   };
 }
 
