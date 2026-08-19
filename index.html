@@ -20,7 +20,7 @@
 <section class="hero" id="top">
   <div class="wrap">
     <div>
-      <div class="hero-tag">Монтаж круглый год · Сыктывкар</div>
+      <div class="hero-tag">Монтаж круглый год</div>
       <h1 id="hero-title"></h1>
       <p class="hero-sub" id="hero-sub"></p>
       <div class="hero-price">
@@ -35,16 +35,15 @@
         <div class="fact"><b>0 ₽</b><span>выезд замерщика</span></div>
         <div class="fact"><b>2 варианта</b><span>винтовые сваи или забивные столбы</span></div>
       </div>
+      <div class="hero-cta">
+        <button class="btn btn-primary btn-sheen" data-popup="calc" data-source="hero">Рассчитать мой забор</button>
+        <a class="btn btn-ghost" data-phone data-keep href="tel:">Позвонить</a>
+      </div>
     </div>
 
-    <div class="quiz" id="quiz">
-      <div class="quiz-head"><h3>Смета за минуту</h3><span class="quiz-step" id="quiz-step"></span></div>
-      <div class="quiz-bar"><i id="quiz-bar"></i></div>
-      <div id="quiz-body"></div>
-      <div class="quiz-nav">
-        <button class="btn-link" id="quiz-back">← назад</button>
-        <button class="btn btn-ghost" id="quiz-next">Дальше →</button>
-      </div>
+    <div class="hero-photo">
+      <img id="hero-photo-img" src="img/cases/case4-1.jpg" alt="Забор из профлиста на винтовых сваях — Сыктывкар">
+      <span class="hero-photo-cap">ул. Ручейная · 64 м за 2 дня</span>
     </div>
   </div>
 </section>
@@ -119,6 +118,9 @@
       <article class="why"><span class="ico">→ столбы</span><h3>Межа с соседями, рабица</h3><p>Лёгкий продуваемый забор, к которому не предъявляют требований по ровности. Переплачивать за сваи нет смысла.</p></article>
       <article class="why"><span class="ico">→ столбы</span><h3>Дача, ограниченный бюджет</h3><p>Нужно закрыть периметр недорого и быстро, а подравнять столб через несколько лет — не проблема.</p></article>
     </div>
+    <div class="block-cta">
+      <button class="btn btn-ghost" data-popup="contact" data-source="tech" data-title="Опишите ваш участок — подскажем решение" data-comment="1">У меня особый случай — нужна консультация</button>
+    </div>
   </div>
 </section>
 
@@ -166,6 +168,9 @@
       <div><b>Свои бригады</b><span>без субподряда: кто замерял, тот и ставит</span></div>
       <div><b>Работаем без электричества</b><span>свой генератор — участок без подключения не помеха</span></div>
     </div>
+    <div class="block-cta">
+      <button class="btn btn-primary btn-sheen" data-popup="contact" data-source="steps" data-title="Записаться на бесплатный замер">Мне всё понятно — давайте замер</button>
+    </div>
   </div>
 </section>
 
@@ -185,6 +190,9 @@
       <details><summary>Что входит в цену за метр?</summary><div class="a"><b>Наш ответ:</b> всё: сваи или столбы, лаги, лист/сетка, крепёж, доставка, монтаж. Забивные столбы дешевле свай на 1 500 ₽ за метр. Отдельно — калитка (+10 000 ₽), распашные ворота (+30 000 ₽) или откатные (+70 000 ₽) и демонтаж старого забора, если он есть. Пример: 20 м глухого профлиста на сваях — 120 000 ₽, с распашными воротами — 150 000 ₽, с откатными — 190 000 ₽.</div></details>
       <details><summary>Что если на участке камни или вода?</summary><div class="a"><b>Наш ответ:</b> смотрим на замере. Камень — сдвигаем точку сваи. Вода и слабый грунт — сваям не мешают, это как раз их случай: забитый столб там не удержится, свая держится лопастью.</div></details>
       <details><summary>Сколько прослужит забор?</summary><div class="a"><b>Наш ответ:</b> на винтовых сваях — <span data-num="life"></span> лет; заводское покрытие плюс грунт-эмаль после монтажа. На забивных столбах металл служит столько же, но сам столб со временем может сдвинуть пучением — забор придётся подравнивать.</div></details>
+    </div>
+    <div class="block-cta">
+      <button class="btn btn-ghost" data-popup="contact" data-source="faq" data-title="Задайте вопрос — ответим лично" data-comment="1">У меня другой вопрос</button>
     </div>
   </div>
 </section>
@@ -237,7 +245,32 @@
 
 <div class="stick">
   <a class="btn btn-ghost" data-phone data-keep href="tel:">Позвонить</a>
-  <a class="btn btn-primary" href="#quiz">Смета за минуту</a>
+  <button class="btn btn-primary" data-popup="calc" data-source="sticky">Смета за минуту</button>
+</div>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-head"><h3 id="modal-title"></h3><button class="modal-x" id="modal-close" aria-label="Закрыть">&#10005;</button></div>
+    <div id="modal-calc" hidden>
+      <div class="quiz-head"><span class="quiz-step" id="quiz-step"></span></div>
+      <div class="quiz-bar"><i id="quiz-bar"></i></div>
+      <div id="quiz-body"></div>
+      <div class="quiz-nav">
+        <button class="btn-link" id="quiz-back">&#8592; назад</button>
+        <button class="btn btn-ghost" id="quiz-next">Дальше &#8594;</button>
+      </div>
+    </div>
+    <form id="modal-contact" hidden>
+      <div class="row2">
+        <div class="field"><label for="c-name">Как к вам обращаться</label><input id="c-name" type="text" autocomplete="name" placeholder="Имя"></div>
+        <div class="field"><label for="c-phone">Телефон</label><input id="c-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 ___ ___-__-__"></div>
+      </div>
+      <div class="field" id="c-comment-wrap"><label for="c-comment">Пара слов об участке или вопросе — необязательно</label><textarea id="c-comment" rows="3"></textarea></div>
+      <button class="btn btn-primary btn-block" type="submit">Отправить</button>
+      <span class="quiz-fine">Перезвоним в течение 15 минут в рабочее время (9:00–20:00). Спама не будет.</span>
+    </form>
+    <div id="c-done" hidden class="quiz-done"><b>Заявка принята.</b><span>Перезвоним в течение 15 минут (9:00–20:00).</span><span class="mock">mock: заявка никуда не отправлена</span></div>
+  </div>
 </div>
 
 <div class="proto">

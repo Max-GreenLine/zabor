@@ -2,7 +2,7 @@
    Всё, что меняется по контенту, — в блоке DATA. Вёрстку трогать не нужно. */
 
 const DATA = {
-  phone: "+7 (8212) 56-29-00",
+  phone: "+7 (904) 613-65-30",
   heroPrice: 4000,                       // одна цифра на общем первом экране
   geo: "Сыктывкар и 50 км вокруг",
   deadline: "30 сентября",              // договоры на монтаж в этом сезоне
@@ -144,11 +144,10 @@ function renderKinds() {
         <p>${v.desc}</p>
         <dl class="spec">${v.spec.map(([k, val]) => `<dt>${k}</dt><dd>${val}</dd>`).join("")}</dl>
         <div class="kind-fit">${v.fit.map(f => `<span>${f}</span>`).join("")}</div>
-        <a class="btn btn-primary" href="#quiz" data-quiz-vid="${id}">Рассчитать ${v.tab.toLowerCase()}</a>
+        <button class="btn btn-primary" data-popup="calc" data-vid="${id}" data-source="kind-${id}" data-title="Рассчитать ${v.tab.toLowerCase()}">Рассчитать ${v.tab.toLowerCase()}</button>
       </div>`;
     box.appendChild(el);
   });
-  $$("[data-quiz-vid]").forEach(a => a.onclick = () => { quiz.a.vid = a.dataset.quizVid; quiz.step = 1; renderQuiz(); });
 }
 
 /* --- работы --- */
@@ -173,6 +172,9 @@ function renderWorks() {
       </div>`;
     box.appendChild(el);
   });
+  const cta = document.createElement("article"); cta.className = "work work-cta";
+  cta.innerHTML = `<div class="work-cta-body"><h3>Тут будет ваш забор</h3><p>Посёлок — ваш, цена — честная. Фото добавим сюда после монтажа.</p><button class="btn btn-primary" data-popup="contact" data-source="works" data-title="Начнём с бесплатного замера">Хочу так же</button></div>`;
+  box.appendChild(cta);
   $$(".work-photo").forEach(ph => {
     const step = d => {
       const n = +ph.dataset.n; let i = (+ph.dataset.i + d - 1 + n) % n + 1; ph.dataset.i = i;
@@ -244,6 +246,39 @@ function renderQuiz() {
 }
 function go(d) { quiz.step = Math.max(0, Math.min(N - 1, quiz.step + d)); renderQuiz(); }
 
+/* --- попап --- */
+const overlay = $("#overlay");
+let popupSource = "";
+function openPopup(mode, o = {}) {
+  popupSource = o.source || "";
+  $("#modal-title").textContent = o.title || (mode === "calc" ? "Смета за минуту" : "Оставьте контакт");
+  $("#modal-calc").hidden = mode !== "calc";
+  const form = $("#modal-contact");
+  form.hidden = mode !== "contact";
+  $("#c-done").hidden = true;
+  if (mode === "contact") $("#c-comment-wrap").style.display = o.comment ? "" : "none";
+  if (mode === "calc") { if (o.vid && DATA.vids[o.vid]) { quiz.a.vid = o.vid; if (quiz.step === 0) quiz.step = 1; } renderQuiz(); }
+  overlay.hidden = false; document.body.style.overflow = "hidden";
+  const f = mode === "contact" ? $("#c-name") : null; if (f) f.focus();
+}
+function closePopup() { overlay.hidden = true; document.body.style.overflow = ""; }
+function bindPopup() {
+  document.addEventListener("click", e => {
+    const b = e.target.closest("[data-popup]");
+    if (b) openPopup(b.dataset.popup, { title: b.dataset.title, source: b.dataset.source, vid: b.dataset.vid, comment: !!b.dataset.comment });
+  });
+  $("#modal-close").onclick = closePopup;
+  overlay.addEventListener("click", e => { if (e.target === overlay) closePopup(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !overlay.hidden) closePopup(); });
+  $("#modal-contact").addEventListener("submit", e => {
+    e.preventDefault();
+    const ph = $("#c-phone").value.replace(/\D/g, "");
+    if (ph.length < 10) { $("#c-phone").focus(); return; }
+    // popupSource — источник кнопки, уйдёт в заявку при подключении бэкенда
+    $("#modal-contact").hidden = true; $("#c-done").hidden = false;
+  });
+}
+
 /* --- финальная форма --- */
 function bindFinal() {
   $("#f-send").onclick = e => {
@@ -271,7 +306,8 @@ document.addEventListener("DOMContentLoaded", () => {
   $$("[data-phone]").forEach(el => { if (!el.hasAttribute("data-keep")) el.textContent = DATA.phone; el.href = "tel:" + DATA.phone.replace(/\D/g, ""); });
   $$("[data-deadline]").forEach(el => el.textContent = DATA.deadline);
   $$("[data-num]").forEach(el => el.textContent = DATA[el.dataset.num]);
-  renderHero(); renderTabs(); renderKinds(); renderWorks(); renderQuiz(); bindFinal(); renderProto();
+  const hp = $("#hero-photo-img"); if (hp) hp.src = imgSrc("case4-1.jpg");
+  renderHero(); renderTabs(); renderKinds(); renderWorks(); renderQuiz(); bindFinal(); bindPopup(); renderProto();
   $("#quiz-back").onclick = () => go(-1);
   $("#quiz-next").onclick = () => go(1);
 });
