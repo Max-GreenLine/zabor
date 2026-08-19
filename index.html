@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Заборы на сваях · Сыктывкар</title>
+<meta name="description" content="Монтаж заборов на винтовых сваях под ключ в Сыктывкаре: профлист, евроштакетник, рабица. Реальная цена за метр, смета в договоре, монтаж за 1–2 дня круглый год.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><span class="brand-mark"></span>Заборы на сваях</div>
+    <span class="top-geo">Сыктывкар и 50 км вокруг · без выходных</span>
+    <a class="top-phone" data-phone href="tel:"></a>
+  </div>
+</header>
+
+<!-- 1. Первый экран: УТП + квиз -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <div class="hero-tag">Монтаж круглый год · Сыктывкар</div>
+      <h1 id="hero-title"></h1>
+      <p class="hero-sub" id="hero-sub"></p>
+      <div class="hero-price">
+        <span class="num" id="hero-price"></span>
+        <span class="cap" id="hero-price-cap"></span>
+      </div>
+      <ul class="hero-includes">
+        <li>сваи или столбы</li><li>лаги</li><li>материал</li><li>доставка</li><li>монтаж</li><li>цена в договоре</li>
+      </ul>
+      <div class="hero-facts">
+        <div class="fact"><b>1–2 дня</b><span>монтаж участка до 100 м</span></div>
+        <div class="fact"><b>0 ₽</b><span>выезд замерщика</span></div>
+        <div class="fact"><b>2 варианта</b><span>винтовые сваи или забивные столбы</span></div>
+      </div>
+    </div>
+
+    <div class="quiz" id="quiz">
+      <div class="quiz-head"><h3>Смета за минуту</h3><span class="quiz-step" id="quiz-step"></span></div>
+      <div class="quiz-bar"><i id="quiz-bar"></i></div>
+      <div id="quiz-body"></div>
+      <div class="quiz-nav">
+        <button class="btn-link" id="quiz-back">← назад</button>
+        <button class="btn btn-ghost" id="quiz-next">Дальше →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. Честная цена -->
+<section class="honest section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Про цену</span>
+      <h2>Реальная цена, а не замануха</h2>
+    </div>
+    <ul class="honest-grid">
+      <li><div><b>Всё включено в метр</b><span>Сваи или столбы, лаги, лист или сетка, крепёж, доставка, работа бригады.</span></div></li>
+      <li><div><b>Точная смета — после замера</b><span>Грунт, рельеф, подъезд, старый забор — это надо увидеть глазами. Дальше цена фиксируется в договоре и на объекте не меняется.</span></div></li>
+      <li><div><b>Ниже — реальные объекты с ценами</b><span>Не «от», а сколько заплатил конкретный заказчик за конкретный забор.</span></div></li>
+      <li><div><b>Оплата по факту</b><span>Аванс только на материал, остальное — когда забор стоит и вы его приняли.</span></div></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 3. Почему сваи -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Технология</span>
+      <h2>Винтовые сваи или забивные столбы — что выбрать</h2>
+    </div>
+
+    <div class="depth">
+      <div class="depth-chart" aria-hidden="true">
+        <svg viewBox="0 0 640 300" width="100%" height="auto">
+          <!-- небо/земля -->
+          <rect x="0" y="0" width="640" height="70" fill="none"/>
+          <rect x="0" y="70" width="640" height="230" fill="var(--soil)"/>
+          <rect x="0" y="70" width="640" height="150" fill="var(--frost)"/>
+          <line x1="0" y1="70" x2="640" y2="70" stroke="var(--ink)" stroke-width="2"/>
+          <!-- линия промерзания 1,7 м -->
+          <line x1="0" y1="220" x2="640" y2="220" stroke="var(--accent)" stroke-width="2" stroke-dasharray="8 6"/>
+          <text x="632" y="212" text-anchor="end" font-family="var(--mono)" font-size="13" fill="var(--accent)">промерзание 1,7 м</text>
+          <text x="12" y="150" font-family="var(--mono)" font-size="12" fill="var(--ink-2)">зона пучения</text>
+          <!-- столб 60×60, забит на 1,2 м (масштаб: 1 м = 88 px) -->
+          <rect x="190" y="0" width="18" height="176" fill="var(--ink-2)"/>
+          <rect x="140" y="20" width="118" height="44" fill="var(--card)" stroke="var(--line)"/>
+          <text x="199" y="60" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--ink-2)">столб 60×60</text>
+          <text x="199" y="196" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--ink-2)">1–1,5 м</text>
+          <path d="M150 176 l6 -8 M160 176 l6 -8 M170 176 l6 -8" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <path d="M228 176 l6 -8 M238 176 l6 -8 M248 176 l6 -8" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <!-- стрелка выдавливания -->
+          <path d="M290 150 v-60 m-8 10 l8 -10 l8 10" stroke="var(--accent)" stroke-width="2" fill="none"/>
+          <!-- винтовая свая на 1,8 м -->
+          <rect x="450" y="0" width="14" height="228" fill="var(--moss)"/>
+          <path d="M457 228 l-26 -14 h52 z" fill="var(--moss)"/>
+          <path d="M457 214 l-20 -10 h40 z" fill="var(--moss)" opacity=".7"/>
+          <rect x="400" y="20" width="118" height="44" fill="var(--card)" stroke="var(--line)"/>
+          <text x="457" y="60" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--moss)">винтовая свая</text>
+          <text x="457" y="250" text-anchor="middle" font-family="var(--mono)" font-size="12" font-weight="700" fill="var(--moss)">1,8 м</text>
+        </svg>
+      </div>
+      <div class="depth-text">
+        <div class="tech"><h3>Забивные столбы</h3><p>Профтруба 60×60 забивается на 1–1,5 м и присыпается грунтом или щебнем.</p>
+          <div class="pm"><b>Плюсы:</b><ul><li>дешевле на 1 500 ₽ за метр</li><li>быстрее — меньше работы на участке</li></ul></div>
+          <div class="pm"><b>Минусы:</b><ul><li>столб остаётся в зоне промерзания — пучение со временем может его сдвинуть</li><li>на слабом или мокром грунте держит хуже</li></ul></div></div>
+        <div class="tech"><h3>Винтовые сваи</h3><p>Свая с лопастью закручивается на 1,8 м — ниже глубины промерзания в Коми (1,7 м). Лопасть держится за плотный грунт.</p>
+          <div class="pm"><b>Плюсы:</b><ul><li>пучение не действует — забор стоит ровно весь срок службы</li><li>держит на склоне, в воде и на болоте</li><li>можно ставить круглый год</li></ul></div>
+          <div class="pm"><b>Минусы:</b><ul><li>дороже на 1 500 ₽ за метр</li></ul></div></div>
+      </div>
+    </div>
+
+    <div class="why-grid">
+      <article class="why"><span class="ico">→ сваи</span><h3>Склон, вода, болото</h3><p>Прямое назначение сваи: лопасть держит там, где забитый столб не удержится. Перепад высот — не проблема.</p></article>
+      <article class="why"><span class="ico">→ сваи</span><h3>Глухой забор и ворота</h3><p>Профлист 2 м — это парус, откатные ворота — тяжёлая створка. Здесь столбы должны стоять как вкопанные, годами.</p></article>
+      <article class="why"><span class="ico">→ столбы</span><h3>Межа с соседями, рабица</h3><p>Лёгкий продуваемый забор, к которому не предъявляют требований по ровности. Переплачивать за сваи нет смысла.</p></article>
+      <article class="why"><span class="ico">→ столбы</span><h3>Дача, ограниченный бюджет</h3><p>Нужно закрыть периметр недорого и быстро, а подравнять столб через несколько лет — не проблема.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- 4. Виды заборов -->
+<section class="section" id="kinds-section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Что ставим</span>
+      <h2>Три вида забора — под задачу и бюджет</h2>
+    </div>
+    <div class="tabs" id="tabs" role="tablist"></div>
+    <div id="kinds"></div>
+  </div>
+</section>
+
+<!-- 5. Наши работы -->
+<section class="works section" id="works-section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Наши работы</span>
+      <h2>Что и за сколько мы поставили за последний год</h2>
+      <p class="lead">Реальные объекты в Сыктывкаре и окрестностях: где, когда, что входило и финальная сумма по договору. Плашка на фото — тип основания.</p>
+    </div>
+    <div class="works-grid" id="works"></div>
+    <p class="works-note">Цена за метр отличается от объекта к объекту: откатные ворота, тип основания, демонтаж старого забора и рельеф меняют смету. Поэтому и нужен замер — он бесплатный.</p>
+  </div>
+</section>
+
+<!-- 6. Этапы + гарантии -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Как это происходит</span>
+      <h2>От заявки до забора — обычно неделя</h2>
+    </div>
+    <ol class="steps">
+      <li><h3>Заявка</h3><p>Квиз или звонок. Перезваниваем в течение 15 минут, называем ориентир по цене.</p></li>
+      <li><h3>Замер</h3><p>Бесплатно, в удобное время. Смотрим грунт, рельеф, где ворота. Считаем на месте.</p></li>
+      <li><h3>Договор</h3><p>Смета фиксируется. Аванс на материал, дату монтажа ставим в договор.</p></li>
+      <li><h3>Монтаж</h3><p>1–2 дня. Своя бригада, свой инструмент. Мусор увозим.</p></li>
+      <li><h3>Приёмка</h3><p>Проходите вдоль забора, проверяете. Доплата — только когда всё устраивает.</p></li>
+    </ol>
+    <div class="guar">
+      <div><b>Срок службы — <span data-num="life"></span> лет</b><span>сваи с заводским покрытием, после монтажа обработка грунт-эмалью</span></div>
+      <div><b>Свои бригады</b><span>без субподряда: кто замерял, тот и ставит</span></div>
+      <div><b>Работаем без электричества</b><span>свой генератор — участок без подключения не помеха</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. 7 вопросов -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Перед тем как заказать</span>
+      <h2>7 вопросов, которые стоит задать любому монтажнику</h2>
+      <p class="lead">Задайте их нам и всем, у кого ещё считаете. Ответы объяснят, откуда берётся разница в цене.</p>
+    </div>
+    <div class="faq">
+      <details><summary>На какую глубину ставите столбы?</summary><div class="a"><b>Наш ответ:</b> винтовые сваи закручиваем на 1,8 м — ниже глубины промерзания в Коми (1,7 м). Забивные столбы уходят на 1–1,5 м, то есть остаются в зоне пучения — это главная причина разницы в цене и в сроке, который забор простоит ровно.</div></details>
+      <details><summary>Это винтовая свая или просто забитая труба?</summary><div class="a"><b>Наш ответ:</b> у нас есть оба варианта. Винтовая свая — с лопастью, закручивается на 1,8 м и держится за плотный грунт. Забивной столб — профтруба 60×60 на 1–1,5 м, дешевле и быстрее. Что выбрать — зависит от задачи, честно расскажем на замере.</div></details>
+      <details><summary>Что с антикоррозийной обработкой?</summary><div class="a"><b>Наш ответ:</b> заводское покрытие сваи, после монтажа — обработка грунт-эмалью. Это защищает металл на стыке «земля-воздух», где ржавеет быстрее всего.</div></details>
+      <details><summary>Сколько рядов лаг и какие?</summary><div class="a"><b>Наш ответ:</b> два ряда профтрубы при высоте до 2 м, три — если выше. <span class="mock">уточнить размер</span></div></details>
+      <details><summary>Что входит в цену за метр?</summary><div class="a"><b>Наш ответ:</b> всё: сваи или столбы, лаги, лист/сетка, крепёж, доставка, монтаж. Забивные столбы дешевле свай на 1 500 ₽ за метр. Отдельно — калитка (+10 000 ₽), распашные ворота (+30 000 ₽) или откатные (+70 000 ₽) и демонтаж старого забора, если он есть. Пример: 20 м глухого профлиста на сваях — 120 000 ₽, с распашными воротами — 150 000 ₽, с откатными — 190 000 ₽.</div></details>
+      <details><summary>Что если на участке камни или вода?</summary><div class="a"><b>Наш ответ:</b> смотрим на замере. Камень — сдвигаем точку сваи. Вода и слабый грунт — сваям не мешают, это как раз их случай: забитый столб там не удержится, свая держится лопастью.</div></details>
+      <details><summary>Сколько прослужит забор?</summary><div class="a"><b>Наш ответ:</b> на винтовых сваях — <span data-num="life"></span> лет; заводское покрытие плюс грунт-эмаль после монтажа. На забивных столбах металл служит столько же, но сам столб со временем может сдвинуть пучением — забор придётся подравнивать.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- 8. Финальная форма + дедлайн -->
+<section class="final section" id="final">
+  <div class="wrap">
+    <div>
+      <div class="deadline">Договоры на этот сезон — до <span data-deadline></span></div>
+      <h2>Успейте поставить забор до снега — по цене этого лета</h2>
+      <p class="lead" style="margin-top:.75rem">В договоре фиксируем сегодняшнюю смету. Металл к следующему сезону дорожает, ваша цена — нет. Сваи ставим и по холоду, поэтому сентябрьские заявки успеваем закрыть в этом году.</p>
+      <ul class="final-list">
+        <li>перезвоним в течение 15 минут</li>
+        <li>бесплатный замер в удобное время</li>
+        <li>смета в договоре, доплат на объекте нет</li>
+      </ul>
+    </div>
+    <form class="form" id="final-form">
+      <h3>Записаться на бесплатный замер</h3>
+      <div class="row">
+        <div class="field"><label for="f-name">Как к вам обращаться</label><input id="f-name" type="text" autocomplete="name" placeholder="Имя"></div>
+        <div class="field"><label for="f-phone">Телефон</label><input id="f-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 ___ ___-__-__"></div>
+      </div>
+      <div class="field"><label for="f-where">Где участок (посёлок, СНТ) — необязательно</label><input id="f-where" type="text" placeholder="Например, Выльгорт"></div>
+      <button class="btn btn-primary btn-block" id="f-send">Зафиксировать цену и записаться</button>
+      <span class="quiz-fine">Нажимая, вы соглашаетесь на обработку персональных данных. Спама не будет.</span>
+    </form>
+  </div>
+</section>
+
+<!-- 9. Футер -->
+<footer class="foot">
+  <div class="wrap">
+    <div>
+      <b>Заборы на сваях</b>
+      Монтаж заборов на винтовых сваях в Сыктывкаре и Сыктывдинском районе. Профлист, евроштакетник, сетка-рабица.<br>
+      <a data-phone href="tel:"></a> · ежедневно 9:00–20:00
+    </div>
+    <div>
+      <b>Куда выезжаем</b>
+      <div class="geo"><span>Сыктывкар</span><span>Эжва</span><span>Выльгорт</span><span>Зеленец</span><span>Пажга</span><span>Краснозатонский</span><span>Максаковка</span><span>Верхняя Максаковка</span><span>Часово</span><span>Ыб</span><span>Нювчим</span><span>+ до 50 км</span></div>
+    </div>
+    <div>
+      <b>Документы</b>
+      ИП Фамилия И.О. · ИНН 000000000000 <span class="mock">mock</span><br>
+      Политика обработки персональных данных
+    </div>
+  </div>
+</footer>
+
+<div class="stick">
+  <a class="btn btn-ghost" data-phone data-keep href="tel:">Позвонить</a>
+  <a class="btn btn-primary" href="#quiz">Смета за минуту</a>
+</div>
+
+<div class="proto">
+  <details>
+    <summary>⚙ прототип</summary>
+    <div class="body">
+      <small>Как открылась страница (подмена первого экрана и квиза):</small>
+      <div id="proto-opts" style="display:grid;gap:.3rem"></div>
+      <small>Плашки MOCK — данные-заглушки.</small>
+    </div>
+  </details>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
