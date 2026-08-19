@@ -55,8 +55,8 @@ const DATA = {
   /* ---- основание: коэффициент к цене за метр ---- */
   postsDelta: 1500,                     // забивные столбы дешевле свай на столько ₽/м.п.
   tech: {
-    svai:  { label: "Винтовые сваи, 1,8 м", small: "ниже промерзания", delta: 0 },
-    posts: { label: "Забивные столбы", small: "−1 500 ₽/м.п.", delta: -1500 }
+    svai:  { label: "Винтовые сваи, 1,8 м", small: "надёжнее", delta: 0 },
+    posts: { label: "Забивные столбы", small: "дешевле", delta: -1500 }
   },
   vidOrder: ["proflist", "shtaketnik", "rabica"],
 
@@ -82,7 +82,7 @@ const DATA = {
   /* ---- квиз ---- */
   quiz: {
     length: [["до 30 м", 25], ["30–60 м", 45], ["60–100 м", 80], ["больше 100 м", 120]],
-    height: [["1,5 м", 0.92], ["1,8 м", 1], ["2 м", 1], ["выше 2 м", 1.12]],
+    heightMult: [[1.2, .88], [1.5, .92], [1.8, 1], [2, 1], [2.5, 1.12]],  // опорные точки множителя цены
     gates: [["Ничего, только забор", 0], ["Калитка", 10000], ["Распашные ворота + калитка", 40000], ["Откатные ворота + калитка", 80000]],
     where: [["Сыктывкар / Эжва", 0], ["До 20 км от города", 0], ["20–50 км", 0]]
   }
@@ -187,13 +187,22 @@ function renderWorks() {
 }
 
 /* --- квиз --- */
-const quiz = { step: currentVid ? 1 : 0, a: { vid: currentVid || null, tech: null, length: null, height: null, gates: null, where: null } };
+function hMult(h) {
+  const pts = DATA.quiz.heightMult;
+  if (h <= pts[0][0]) return pts[0][1];
+  for (let i = 1; i < pts.length; i++) if (h <= pts[i][0]) {
+    const [x1, y1] = pts[i - 1], [x2, y2] = pts[i];
+    return y1 + (y2 - y1) * (h - x1) / (x2 - x1);
+  }
+  return pts[pts.length - 1][1];
+}
+const quiz = { step: currentVid ? 1 : 0, a: { vid: currentVid || null, tech: null, length: null, height: null, gates: null, where: null, channel: "tg" } };
 const STEPS = ["vid", "tech", "length", "height", "gates", "where", "contact"];
 const N = STEPS.length;
 function estimate() {
   const v = DATA.vids[quiz.a.vid || "proflist"];
   const L = DATA.quiz.length[quiz.a.length ?? 1][1];
-  const H = DATA.quiz.height[quiz.a.height ?? 2][1];
+  const H = hMult(quiz.a.height ?? 1.8);
   const G = DATA.quiz.gates[quiz.a.gates ?? 0][1];
   const W = DATA.quiz.where[quiz.a.where ?? 0][1];
   const D = quiz.a.tech ? DATA.tech[quiz.a.tech].delta : 0;
@@ -216,17 +225,25 @@ function renderQuiz() {
   } else if (s === "length") {
     html = `<div class="quiz-q">Какая длина забора?</div><div class="quiz-fine">Примерно — точную снимет замерщик, бесплатно</div>${opts("length", DATA.quiz.length, true)}`;
   } else if (s === "height") {
-    html = `<div class="quiz-q">Высота?</div>${opts("height", DATA.quiz.height, true)}`;
+    if (quiz.a.height == null) quiz.a.height = 1.8;
+    html = `<div class="quiz-q">Высота забора?</div>
+      <div class="hslider">
+        <output id="h-out">${quiz.a.height.toFixed(1).replace(".", ",")} м</output>
+        <input type="range" id="h-range" min="1.2" max="2.5" step="0.1" value="${quiz.a.height}" aria-label="Высота забора, метров">
+        <div class="hslider-scale"><span>1,2</span><span>1,8</span><span>2,5</span></div>
+      </div>`;
   } else if (s === "gates") {
     html = `<div class="quiz-q">Ворота и калитка нужны?</div>${opts("gates", DATA.quiz.gates, false)}`;
   } else if (s === "where") {
     html = `<div class="quiz-q">Где участок?</div>${opts("where", DATA.quiz.where, false)}`;
   } else {
-    const [a, b] = estimate();
-    html = `<div class="quiz-est"><span>Предварительно ваш забор</span><b>${fmtK(a)} – ${fmtK(b)} ₽</b><span>Точную смету посчитаем после бесплатного замера и зафиксируем в договоре</span></div>
-      <div class="field"><label for="q-phone">Телефон — пришлём смету и запишем на замер</label><input id="q-phone" type="tel" inputmode="tel" placeholder="+7 ___ ___-__-__" autocomplete="tel"></div>
-      <button class="btn btn-primary btn-block" id="q-send">Получить смету и зафиксировать цену</button>
-      <div class="quiz-fine">Никакого спама: один звонок или сообщение в мессенджер, как удобнее.</div>`;
+    const CH = [["tg", "В Telegram"], ["max", "В MAX"], ["call", "Позвоните мне"]];
+    html = `<div class="quiz-est"><b>Готово — считаем вашу смету</b><span>Куда прислать расчёт?</span></div>
+      <div class="opts ch-opts">${CH.map(([id, lbl]) =>
+        `<button class="opt" aria-pressed="${quiz.a.channel === id}" data-ch="${id}">${lbl}</button>`).join("")}</div>
+      <div class="field"><label for="q-phone">${quiz.a.channel === "call" ? "Телефон — перезвоним с расчётом" : "Номер, привязанный к мессенджеру"}</label><input id="q-phone" type="tel" inputmode="tel" placeholder="+7 ___ ___-__-__" autocomplete="tel"></div>
+      <button class="btn btn-primary btn-block" id="q-send">Получить расчёт</button>
+      <div class="quiz-fine">Точную смету посчитаем после бесплатного замера и зафиксируем в договоре. Никакого спама.</div>`;
   }
   root.innerHTML = html;
   $("#quiz-back").style.visibility = quiz.step > 0 ? "visible" : "hidden";
@@ -235,12 +252,21 @@ function renderQuiz() {
   next.disabled = quiz.a[s] == null;
 
   $$(".opt[data-vid]", root).forEach(b => b.onclick = () => { quiz.a.vid = b.dataset.vid; go(1); });
+  const hr = $("#h-range", root);
+  if (hr) hr.oninput = () => { quiz.a.height = +hr.value; $("#h-out").textContent = quiz.a.height.toFixed(1).replace(".", ",") + " м"; };
+  $$(".opt[data-ch]", root).forEach(b => b.onclick = () => {
+    quiz.a.channel = b.dataset.ch;
+    const phone = $("#q-phone").value;
+    renderQuiz(); $("#q-phone").value = phone;
+  });
   $$(".opt[data-tech]", root).forEach(b => b.onclick = () => { quiz.a.tech = b.dataset.tech; go(1); });
   $$(".opt[data-k]", root).forEach(b => b.onclick = () => { quiz.a[b.dataset.k] = +b.dataset.i; go(1); });
   const send = $("#q-send"); if (send) send.onclick = () => {
     const ph = $("#q-phone").value.replace(/\D/g, "");
     if (ph.length < 10) { $("#q-phone").focus(); $("#q-phone").style.borderColor = "var(--accent)"; return; }
-    root.innerHTML = `<div class="quiz-done"><b>Спасибо! Смета уже считается.</b><span>Перезвоним в течение 15 минут в рабочее время (9:00–20:00).</span><span class="mock">mock: заявка никуда не отправлена</span></div>`;
+    const msg = quiz.a.channel === "call" ? "Перезвоним с расчётом в течение 15 минут в рабочее время (9:00–20:00)."
+      : `Пришлём расчёт в ${quiz.a.channel === "tg" ? "Telegram" : "MAX"} в течение 15 минут в рабочее время (9:00–20:00).`;
+    root.innerHTML = `<div class="quiz-done"><b>Спасибо! Смета уже считается.</b><span>${msg}</span><span class="mock">mock: заявка никуда не отправлена</span></div>`;
     $("#quiz-back").style.visibility = "hidden";
   };
 }
