@@ -4,6 +4,7 @@
 const DATA = {
   // приёмник заявок: на своём домене — относительный путь (работает и по http, и по https), с других копий — абсолютный; пусто = режим макета
   leadUrl: /arsenal-zabor\.(ru|online)$/.test(location.hostname) ? "api/lead.php" : "https://arsenal-zabor.ru/api/lead.php",
+  metrikaId: null,                       // номер счётчика Яндекс Метрики; null = не подключать
   phone: "+7 (904) 613-65-30",
   heroPrice: 4000,                       // одна цифра на общем первом экране
   geo: "Сыктывкар и 50 км вокруг",
@@ -272,6 +273,7 @@ function renderQuiz() {
     } catch (e) { send.disabled = false; send.textContent = "Получить расчёт"; alert(FAIL_MSG); return; }
     const msg = quiz.a.channel === "call" ? "Перезвоним с расчётом в течение 15 минут в рабочее время (9:00–20:00)."
       : `Пришлём расчёт в ${quiz.a.channel === "tg" ? "Telegram" : "MAX"} в течение 15 минут в рабочее время (9:00–20:00).`;
+    track("lead", { form: "quiz", source: popupSource || "quiz", vid: quiz.a.vid, channel: quiz.a.channel });
     root.innerHTML = `<div class="quiz-done"><b>Спасибо! Смета уже считается.</b><span>${msg}</span>${mockNote()}</div>`;
     $("#quiz-back").style.visibility = "hidden";
   };
@@ -301,11 +303,24 @@ async function sendLead(lines, phone) {
 const mockNote = () => DATA.leadUrl ? "" : '<span class="mock">mock: заявка никуда не отправлена</span>';
 const FAIL_MSG = "Не получилось отправить — позвоните нам: " + DATA.phone;
 
+/* --- аналитика: цели Метрики (безопасно, если счётчика нет) --- */
+function track(goal, params) {
+  if (!DATA.metrikaId || typeof ym !== "function") return;
+  try { ym(DATA.metrikaId, "reachGoal", goal, params || {}); } catch (e) {}
+}
+function initMetrika() {
+  const id = DATA.metrikaId; if (!id) return;
+  window.ym = window.ym || function () { (window.ym.a = window.ym.a || []).push(arguments); }; window.ym.l = +new Date();
+  const s = document.createElement("script"); s.async = true; s.src = "https://mc.yandex.ru/metrika/tag.js"; document.head.appendChild(s);
+  ym(id, "init", { clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: true, params: { vid: currentVid || "general" } });
+}
+
 /* --- попап --- */
 const overlay = $("#overlay");
 let popupSource = "";
 function openPopup(mode, o = {}) {
   popupSource = o.source || "";
+  track("popup_open", { mode, source: popupSource });
   $("#modal-title").textContent = o.title || (mode === "calc" ? "Смета за минуту" : "Оставьте контакт");
   $("#modal-calc").hidden = mode !== "calc";
   const form = $("#modal-contact");
@@ -336,6 +351,7 @@ function bindPopup() {
     const com = $("#c-comment").value.trim(); if (com) lines.push("Комментарий: " + com);
     try { await sendLead(lines, ph); } catch (err) { btn.disabled = false; btn.textContent = lbl; alert(FAIL_MSG); return; }
     btn.disabled = false; btn.textContent = lbl;
+    track("lead", { form: "contact", source: popupSource });
     $("#modal-contact").hidden = true; $("#c-done").hidden = false;
     $("#c-done .mock")?.remove(); if (!DATA.leadUrl) $("#c-done").insertAdjacentHTML("beforeend", '<span class="mock">mock: заявка никуда не отправлена</span>');
   });
@@ -351,6 +367,7 @@ function bindFinal() {
     const lines = ["Источник: финальная форма (замер)", "Имя: " + ($("#f-name").value.trim() || "—"), "Телефон: +7" + ph.slice(-10)];
     const wh = $("#f-where").value.trim(); if (wh) lines.push("Участок: " + wh);
     try { await sendLead(lines, ph); } catch (err) { btn.disabled = false; btn.textContent = "Зафиксировать цену и записаться"; alert(FAIL_MSG); return; }
+    track("lead", { form: "final", source: "final" });
     $("#final-form").innerHTML = `<div class="form-ok">Заявка принята. Перезвоним в течение 15 минут.</div>${mockNote()}`;
   };
 }
@@ -369,7 +386,8 @@ function renderProto() {
 
 /* --- init --- */
 document.addEventListener("DOMContentLoaded", () => {
-  $$("[data-phone]").forEach(el => { if (!el.hasAttribute("data-keep")) el.textContent = DATA.phone; el.href = "tel:" + DATA.phone.replace(/\D/g, ""); });
+  $$("[data-phone]").forEach(el => { if (!el.hasAttribute("data-keep")) el.textContent = DATA.phone; el.href = "tel:" + DATA.phone.replace(/\D/g, ""); el.addEventListener("click", () => track("phone_click", { where: el.closest("header") ? "header" : el.closest(".stick") ? "sticky" : el.closest(".hero") ? "hero" : "footer" })); });
+  initMetrika();
   $$("[data-deadline]").forEach(el => el.textContent = DATA.deadline);
   $$("[data-num]").forEach(el => el.textContent = DATA[el.dataset.num]);
   const hp = $("#hero-photo-img"); if (hp) hp.src = imgSrc("case3-6.jpg");
