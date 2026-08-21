@@ -2,7 +2,8 @@
    Всё, что меняется по контенту, — в блоке DATA. Вёрстку трогать не нужно. */
 
 const DATA = {
-  leadUrl: "https://arsenal-zabor.ru/api/lead.php",  // приёмник заявок; пусто = режим макета
+  // приёмник заявок: на своём домене — относительный путь (работает и по http, и по https), с других копий — абсолютный; пусто = режим макета
+  leadUrl: /arsenal-zabor\.(ru|online)$/.test(location.hostname) ? "api/lead.php" : "https://arsenal-zabor.ru/api/lead.php",
   phone: "+7 (904) 613-65-30",
   heroPrice: 4000,                       // одна цифра на общем первом экране
   geo: "Сыктывкар и 50 км вокруг",

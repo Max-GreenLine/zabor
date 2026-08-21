@@ -31,6 +31,7 @@ curl_setopt_array($ch, [
     CURLOPT_POSTFIELDS => http_build_query(['chat_id' => $chat, 'text' => $text]),
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_TIMEOUT => 10,
+    CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V6,   // reg.ru: из веб-PHP к Telegram по IPv4 не пускает, по IPv6 — ок
 ]);
 $res  = curl_exec($ch);
 $err  = curl_error($ch);
