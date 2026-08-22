@@ -4,7 +4,7 @@
 const DATA = {
   // приёмник заявок: на своём домене — относительный путь (работает и по http, и по https), с других копий — абсолютный; пусто = режим макета
   leadUrl: /arsenal-zabor\.(ru|online)$/.test(location.hostname) ? "api/lead.php" : "https://arsenal-zabor.ru/api/lead.php",
-  metrikaId: null,                       // номер счётчика Яндекс Метрики; null = не подключать
+  metrikaId: 111848472,                  // счётчик Яндекс Метрики
   phone: "+7 (904) 613-65-30",
   heroPrice: 4000,                       // одна цифра на общем первом экране
   geo: "Сыктывкар и 50 км вокруг",
