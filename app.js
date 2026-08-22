@@ -96,7 +96,7 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const fmt = n => n.toLocaleString("ru-RU");
 const fmtK = n => Math.round(n / 1000) + " тыс.";
-const imgSrc = n => (window.CASE_IMG && window.CASE_IMG[n]) || (n.endsWith(".svg") ? "img/" : "img/cases/") + n;   // в артефакте картинки вшиты
+const imgSrc = n => (window.CASE_IMG && window.CASE_IMG[n]) || (n.startsWith("case") ? "img/cases/" : "img/") + n;   // в артефакте картинки вшиты
 const postsPrice = v => v.price - DATA.postsDelta;
 const priceStr = v => `${v.from ? "от " : ""}${fmt(v.price)} ₽ / м.п.`;
 const priceLines = v => `<span class="pl"><b>${v.from ? "от " : ""}${fmt(postsPrice(v))} ₽</b> / м.п. на забивных столбах${v.postsOnly ? " — рекомендуем" : ""}</span><span class="pl"><b>${v.from ? "от " : ""}${fmt(v.price)} ₽</b> / м.п. на винтовых сваях</span>`;
@@ -105,8 +105,7 @@ const priceLines = v => `<span class="pl"><b>${v.from ? "от " : ""}${fmt(posts
 function detectVid() {
   const q = new URLSearchParams(location.search).get("vid");
   const h = (location.hash.match(/vid=(\w+)/) || [])[1];
-  const s = localStorage.getItem("proto-vid");
-  const v = q || h || s;
+  const v = q || h;
   return DATA.vids[v] ? v : null;
 }
 let currentVid = detectVid();          // null = общий запрос
@@ -115,7 +114,7 @@ let activeTab = currentVid || "proflist";
 /* --- первый экран --- */
 function renderHero() {
   const v = currentVid ? DATA.vids[currentVid] : null;
-  $("#hero-title").innerHTML = v ? v.title : "Заборы на винтовых сваях <span>под ключ</span> в Сыктывкаре";
+  $("#hero-title").innerHTML = v ? v.title : "Заборы на <span>винтовых сваях</span> и забивных столбах в Сыктывкаре";
   $("#hero-sub").textContent = v ? v.sub : "Профлист, евроштакетник, рабица. Сваи закручиваем ниже промерзания — забор не поведёт весной. Цена фиксируется в договоре.";
   const p = v || DATA.vids.proflist;
   $("#hero-price").textContent = `от ${fmt(v ? postsPrice(v) : DATA.heroPrice)} ₽ / м.п.`;
@@ -372,26 +371,14 @@ function bindFinal() {
   };
 }
 
-/* --- панель прототипа --- */
-function renderProto() {
-  const box = $("#proto-opts"); box.innerHTML = "";
-  [["", "общий запрос"], ...DATA.vidOrder.map(id => [id, "?vid=" + id])].forEach(([id, lbl]) => {
-    const b = document.createElement("button");
-    b.textContent = lbl; b.setAttribute("aria-pressed", (currentVid || "") === id);
-    b.onclick = () => { if (id) localStorage.setItem("proto-vid", id); else localStorage.removeItem("proto-vid");
-      const u = new URL(location.href); u.search = id ? "?vid=" + id : ""; u.hash = ""; location.href = u.href; };
-    box.appendChild(b);
-  });
-}
-
 /* --- init --- */
 document.addEventListener("DOMContentLoaded", () => {
   $$("[data-phone]").forEach(el => { if (!el.hasAttribute("data-keep")) el.textContent = DATA.phone; el.href = "tel:" + DATA.phone.replace(/\D/g, ""); el.addEventListener("click", () => track("phone_click", { where: el.closest("header") ? "header" : el.closest(".stick") ? "sticky" : el.closest(".hero") ? "hero" : "footer" })); });
   initMetrika();
   $$("[data-deadline]").forEach(el => el.textContent = DATA.deadline);
   $$("[data-num]").forEach(el => el.textContent = DATA[el.dataset.num]);
-  const hp = $("#hero-photo-img"); if (hp) hp.src = imgSrc("case3-6.jpg");
-  renderHero(); renderTabs(); renderKinds(); renderWorks(); renderQuiz(); bindFinal(); bindPopup(); renderProto();
+  const hp = $("#hero-photo-img"); if (hp) hp.src = imgSrc("hero.jpg");
+  renderHero(); renderTabs(); renderKinds(); renderWorks(); renderQuiz(); bindFinal(); bindPopup();
   $("#quiz-back").onclick = () => go(-1);
   $("#quiz-next").onclick = () => go(1);
 });

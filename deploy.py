@@ -9,7 +9,7 @@ ROOT = pathlib.Path(__file__).resolve().parent
 kv = dict(re.findall(r'(\w+)\s*[=:]\s*(\S+)', io.open(ROOT.parent / '.ftp_creds', encoding='utf-8-sig').read()))
 DOC = '/var/www/u3616200/data/www/arsenal-zabor.ru'
 
-files = ['index.html', 'styles.css', 'app.js', 'politika.html', 'api/lead.php']
+files = ['index.html', 'styles.css', 'app.js', 'politika.html', 'favicon.ico', 'api/lead.php']
 files += [p.relative_to(ROOT).as_posix() for p in (ROOT / 'img').rglob('*') if p.is_file()]
 if '--htaccess' in sys.argv:
     files.append('.htaccess')

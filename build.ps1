@@ -14,6 +14,10 @@ $index = @"
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>$title</title>
 <meta name="description" content="Монтаж заборов на винтовых сваях под ключ в Сыктывкаре: профлист, евроштакетник, рабица. Реальная цена за метр, смета в договоре, монтаж за 1–2 дня круглый год.">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="img/fav/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="img/fav/favicon-192.png">
+<link rel="apple-touch-icon" href="img/fav/apple-touch-icon.png">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -24,7 +28,7 @@ $body
 "@
 
 # картинки кейсов -> base64 для артефакта
-$imgs = Get-ChildItem "$root\img\cases\*.jpg" | ForEach-Object {
+$imgs = @(Get-ChildItem "$root\img\cases\*.jpg") + @(Get-ChildItem "$root\img\*.jpg") | ForEach-Object {
   $mime = "image/jpeg"
   '"' + $_.Name + '":"data:' + $mime + ';base64,' + [Convert]::ToBase64String([IO.File]::ReadAllBytes($_.FullName)) + '"'
 }
