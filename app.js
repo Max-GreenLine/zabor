@@ -379,6 +379,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $$("[data-num]").forEach(el => el.textContent = DATA[el.dataset.num]);
   const hp = $("#hero-photo-img"); if (hp) hp.src = imgSrc("hero.jpg");
   renderHero(); renderTabs(); renderKinds(); renderWorks(); renderQuiz(); bindFinal(); bindPopup();
+  if (location.hash === "#calc") openPopup("calc", { source: "link" });   // быстрая ссылка из Директа
   $("#quiz-back").onclick = () => go(-1);
   $("#quiz-next").onclick = () => go(1);
 });
